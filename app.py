@@ -218,69 +218,88 @@ logger = []
 @app.errorhandler(404)
 def not_found(err):
     global logger
-    now = datetime.today()
-    logger.append(f"[{now.strftime('%Y-%m-%d %H:%M:%S')} пользователь {request.remote_addr}] перешел по адресу: {request.url}")
-    logs = ""
-    for i in logger:
-        log = f"<li>{i}</li> "
-        logs += log
-    return '''
+    now = datetime.datetime.today()
+    user_ip = request.remote_addr
+    requested_url = request.url
+    
+    # Добавляем запись в лог
+    logger.append(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] IP: {user_ip}, URL: {requested_url}")
+    
+    # Формируем красивый HTML для лога
+    logs_html = ""
+    for entry in logger:
+        logs_html += f"<li>{entry}</li>"
+
+    # Ссылка на корень сайта
+    home_url = url_for("index")
+    
+    return f'''
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ошибка 404</title>
     <style>
-        body {
+        body {{
             background-color: #ffe6e6;
             font-family: Arial, sans-serif;
-            text-align: center;
             color: #333;
-        }
-        h1 {
+            text-align: center;
+            padding: 20px;
+        }}
+        h1 {{
             font-size: 150px;
             color: red;
             text-shadow: 2px 2px 5px #900;
-        }
-        h2 {
+        }}
+        h2 {{
             font-size: 30px;
             margin-bottom: 20px;
-        }
-        p {
+        }}
+        p {{
             font-size: 18px;
-        }
-        img {
+        }}
+        a {{
+            text-decoration: none;
+            color: #0066cc;
+            font-weight: bold;
+        }}
+        img {{
             max-width: 400px;
             margin-top: 20px;
-        }
-        ul {
+        }}
+        ul {{
             list-style-type: none;
             padding: 0;
-        }
-        div.logger {
-            position: fixed;
-            bottom: 0px;
-            left: 0px;
+            text-align: left;
+            display: inline-block;
+            margin-top: 20px;
+        }}
+        div.logger {{
+            margin-top: 30px;
             color: green;
-        }
+            font-size: 14px;
+        }}
     </style>
 </head>
 <body>
-    <main>
-        <h1>404</h1>
-        <h2>Упс! Страница не найдена 😢</h2>
-        <p>Возможно, она была удалена или вы ошиблись в адресе.</p>
-        <img src="''' + url_for("static", filename="not_found.png") + '''" alt="404 картинка">
-        <div class="logger">
-            <ul>
-                ''' + logs + '''
-            </ul>
-        </div>
-    </main>
+    <h1>404</h1>
+    <h2>Упс! Страница не найдена 😢</h2>
+    <p>IP текущего пользователя: {user_ip}</p>
+    <p>Дата и время доступа: {now.strftime('%Y-%m-%d %H:%M:%S')}</p>
+    <p><a href="{home_url}">Вернуться на главную страницу</a></p>
+    <img src="{url_for('static', filename='not_found.png')}" alt="404 картинка">
+    
+    <div class="logger">
+        <h3>Журнал посещений 404:</h3>
+        <ul>
+            {logs_html}
+        </ul>
+    </div>
 </body>
 </html>
-'''
+''', 404
+
 @app.errorhandler(500)
 def handle_500(err):
     return '''
