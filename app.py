@@ -254,3 +254,26 @@ def not_found(err):
 </body>
 </html>
 '''
+@app.errorhandler(500)
+def handle_500(err):
+    return '''
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка 500</title>
+    <style>
+        body { text-align:center; font-family: Arial, sans-serif; background-color: #f2f2f2; }
+        h1 { font-size: 150px; color: red; }
+        h2 { font-size: 30px; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>500</h1>
+        <h2>Внутренняя ошибка сервера</h2>
+        <p>Что-то пошло не так на сервере. Пожалуйста, попробуйте позже.</p>
+    </main>
+</body>
+</html>
+''', 500
