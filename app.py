@@ -39,7 +39,6 @@ def lab1():
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Лабораторная 1</title>
 </head>
 <body>
@@ -52,6 +51,27 @@ def lab1():
         зовые возможности.</p>
 
         <br><a href="''' + title_page + '''">Назад в главное меню</a>
+
+        <h2>Список роутов</h2>
+
+        <ul>
+            <li><a href="/lab1/web">/lab1/web</a></li>
+            <li><a href="/lab1/author">/lab1/author</a></li>
+            <li><a href="/lab1/image">/lab1/image</a></li>
+            <li><a href="/lab1/counter">/lab1/counter</a></li>
+            <li><a href="/lab1/counter/clear">/lab1/counter/clear</a></li>
+            <li><a href="/lab1/info">/lab1/info</a></li>
+            <li><a href="/lab1/create">/lab1/create</a></li>
+            <li><a href="/lab1/400">/lab1/400</a></li>
+            <li><a href="/lab1/401">/lab1/401</a></li>
+            <li><a href="/lab1/402">/lab1/402</a></li>
+            <li><a href="/lab1/403">/lab1/403</a></li>
+            <li><a href="/lab1/405">/lab1/405</a></li>
+            <li><a href="/lab1/418">/lab1/418</a></li>
+            <li><a href="/lab1/500">/lab1/500</a></li>
+            <li><a href="/lab1/aboba">Несуществующая страница</a></li>
+        </ul>
+
     </main>
 </body>
 </html>
