@@ -188,3 +188,69 @@ def error_500():
 
 logger = []
 
+@app.errorhandler(404)
+def not_found(err):
+    global logger
+    now = datetime.today()
+    logger.append(f"[{now.strftime('%Y-%m-%d %H:%M:%S')} пользователь {request.remote_addr}] перешел по адресу: {request.url}")
+    logs = ""
+    for i in logger:
+        log = f"<li>{i}</li> "
+        logs += log
+    return '''
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ошибка 404</title>
+    <style>
+        body {
+            background-color: #ffe6e6;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: #333;
+        }
+        h1 {
+            font-size: 150px;
+            color: red;
+            text-shadow: 2px 2px 5px #900;
+        }
+        h2 {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+        }
+        img {
+            max-width: 400px;
+            margin-top: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        div.logger {
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>404</h1>
+        <h2>Упс! Страница не найдена 😢</h2>
+        <p>Возможно, она была удалена или вы ошиблись в адресе.</p>
+        <img src="''' + url_for("static", filename="not_found.png") + '''" alt="404 картинка">
+        <div class="logger">
+            <ul>
+                ''' + logs + '''
+            </ul>
+        </div>
+    </main>
+</body>
+</html>
+'''
