@@ -323,3 +323,8 @@ def handle_500(err):
 </body>
 </html>
 ''', 500
+
+@app.route('/lab2/a/')
+def a():
+    return 'ok'
+
