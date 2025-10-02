@@ -355,10 +355,15 @@ def add_flower(name):
 def example():
     name = 'Квашнина Алёна'
     group = 'ФБИ-34'
-    lab = 2
+    lab_num = 2
     course = 3
-    return render_template('example.html', name=name,
-                                           group=group,
-                                           lab=lab,
-                                           course=course
-                            )
+    fruits = [
+        {'name': 'яблоки', 'price': 100},
+        {'name': 'груши', 'price': 120},
+        {'name': 'апельсины', 'price': 80},
+        {'name': 'мандарины', 'price': 95},
+        {'name': 'манго', 'price': 321},
+        ]
+    return render_template('example.html', 
+                           name=name, group=group, lab_num= lab_num,
+                           course=course, fruits=fruits)
