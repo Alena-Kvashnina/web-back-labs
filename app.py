@@ -468,3 +468,29 @@ def books():
         {"author": "Владимир Набоков", "title": "Лолита", "genre": "Роман", "pages": 368}
     ]
     return render_template("books.html", books=books_list)
+
+@app.route('/lab2/berries')
+def berries():
+    berries_list = [
+        {"name": "Клубника", "desc": "Сочная и сладкая летняя ягода.", "img": url_for('static', filename='berries.klubnika.jpg')},
+        {"name": "Малина", "desc": "Ароматная ягода с кислинкой.", "img": url_for('static', filename='berries.malina.jpg')},
+        {"name": "Черника", "desc": "Полезная ягода для зрения.", "img": url_for('static', filename='berries.chernika.jpg')},
+        {"name": "Смородина", "desc": "Черная или красная, богата витамином C.", "img": url_for('static', filename='berries.smorodina.jpg')},
+        {"name": "Голубика", "desc": "Лесная ягода, похожа на чернику, но крупнее.", "img": url_for('static', filename='berries.golubika.jpg')},
+        {"name": "Ежевика", "desc": "Колючая, но очень вкусная ягода.", "img": url_for('static', filename='berries.ezhevika.jpg')},
+        {"name": "Брусника", "desc": "Ягода северных лесов, хороша для морса.", "img": url_for('static', filename='berries.brusnika.jpg')},
+        {"name": "Клюква", "desc": "Кислая болотная ягода.", "img": url_for('static', filename='berries.klukva.jpg')},
+        {"name": "Облепиха", "desc": "Оранжевые ягоды, из которых делают масло.", "img": url_for('static', filename='berries.oblepikha.jpg')},
+        {"name": "Крыжовник", "desc": "Зеленая или красная ягода с кисло-сладким вкусом.", "img": url_for('static', filename='berries.kryzhovnik.jpg')},
+        {"name": "Шиповник", "desc": "Ягода дикого розового куста, очень витаминная.", "img": url_for('static', filename='berries.shipovnik.jpg')},
+        {"name": "Рябина", "desc": "Красные ягоды, которые любят птицы.", "img": url_for('static', filename='berries.ryabina.jpg')},
+        {"name": "Калина", "desc": "Красная горьковатая ягода.", "img": url_for('static', filename='berries.kalina.jpg')},
+        {"name": "Жимолость", "desc": "Темно-синие ягоды необычной формы.", "img": url_for('static', filename='berries.zhimolost.jpg')},
+        {"name": "Ирга", "desc": "Сладкая ягода, напоминающая чернику.", "img": url_for('static', filename='berries.irga.jpg')},
+        {"name": "Барбарис", "desc": "Кислые ягоды, часто используют в конфетах.", "img": url_for('static', filename='berries.barbaris.jpg')},
+        {"name": "Черемуха", "desc": "Ягода с терпким вкусом.", "img": url_for('static', filename='berries.cheremukha.jpg')},
+        {"name": "Морошка", "desc": "Редкая болотная ягода янтарного цвета.", "img": url_for('static', filename='berries.moroshka.jpg')},
+        {"name": "Арония", "desc": "Черноплодная рябина, полезная для давления.", "img": url_for('static', filename='berries.aronia.jpg')},
+        {"name": "Вишня", "desc": "Кисло-сладкая ягода для компотов и пирогов.", "img": url_for('static', filename='berries.vishnya.jpg')}
+    ]
+    return render_template("berries.html", berries=berries_list)
