@@ -7,6 +7,7 @@ app = Flask(__name__)
 @app.route("/index")
 def index():
     lab1_web = url_for("web")
+    lab2 = url_for("lab2")  # ссылка на вторую лабу
     return f'''
 <!doctype html>
 <html>
@@ -22,6 +23,7 @@ def index():
         <main>
             <ul>
                 <li><a href="{lab1_web}">Первая лабораторная</a></li>
+                <li><a href="{lab2}">Вторая лабораторная</a></li>
             </ul>
         </main>
         <footer>
@@ -415,7 +417,20 @@ def example():
 
 @app.route('/lab2/')
 def lab2():
-    return render_template('lab2.html')
+    routes = [
+        {'name': 'Пример с фруктами', 'url': url_for('example')},
+        {'name': 'Фильтры Jinja2', 'url': url_for('filters')},
+        {'name': 'Калькулятор (по умолчанию 1/1)', 'url': url_for('calc_default')},
+        {'name': 'Калькулятор (7 и 1)', 'url': url_for('calc_one_arg', a=7)},
+        {'name': 'Калькулятор (3 и 4)', 'url': url_for('calc', a=3, b=4)},
+        {'name': 'Цветок №0', 'url': url_for('flowers', flower_id=0)},
+        {'name': 'Список всех цветов', 'url': url_for('all_flowers')},
+        {'name': 'Добавить цветок', 'url': url_for('add_flower', name='роза')},
+        {'name': 'Очистить список цветов', 'url': url_for('clear_flowers')},
+        {'name': 'Список книг', 'url': url_for('books')},
+        {'name': 'Список ягод с картинками', 'url': url_for('berries')},
+    ]
+    return render_template('lab2.html', routes=routes)
 
 @app.route('/lab2/filters')
 def filters():
