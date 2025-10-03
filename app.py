@@ -452,3 +452,19 @@ def calc(a, b):
     </body>
 </html>
 '''
+
+@app.route('/lab2/books')
+def books():
+    books_list = [
+        {"author": "Фёдор Достоевский", "title": "Преступление и наказание", "genre": "Роман", "pages": 672},
+        {"author": "Лев Толстой", "title": "Война и мир", "genre": "Роман", "pages": 1225},
+        {"author": "Александр Пушкин", "title": "Евгений Онегин", "genre": "Роман в стихах", "pages": 320},
+        {"author": "Антон Чехов", "title": "Вишнёвый сад", "genre": "Пьеса", "pages": 112},
+        {"author": "Николай Гоголь", "title": "Мёртвые души", "genre": "Поэма", "pages": 352},
+        {"author": "Иван Тургенев", "title": "Отцы и дети", "genre": "Роман", "pages": 280},
+        {"author": "Михаил Булгаков", "title": "Мастер и Маргарита", "genre": "Роман", "pages": 480},
+        {"author": "Максим Горький", "title": "Мать", "genre": "Роман", "pages": 416},
+        {"author": "Александр Куприн", "title": "Олеся", "genre": "Повесть", "pages": 160},
+        {"author": "Владимир Набоков", "title": "Лолита", "genre": "Роман", "pages": 368}
+    ]
+    return render_template("books.html", books=books_list)
