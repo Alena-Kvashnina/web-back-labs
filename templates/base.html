@@ -5,10 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Квашнина Алёна. {% block lab %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
 </head>
 <body>
     <header>
         WEB-программирование, часть 2. {{ self.lab() }}
+        <nav>
+            <a href="/">Главное меню</a> |
+            <a href="/lab1/">Лабораторная 1</a> |
+            <a href="/lab2/">Лабораторная 2</a>
+    </nav>
     </header>
 
     <main>
