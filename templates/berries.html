@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список ягод</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .card img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        .card h3 {
+            margin: 10px 0 5px;
+        }
+        .card p {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ягоды</h1>
+    <div class="grid">
+        {% for berry in berries %}
+        <div class="card">
+            <img src="{{ berry.img }}" alt="{{ berry.name }}">
+            <h3>{{ berry.name }}</h3>
+            <p>{{ berry.desc }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
