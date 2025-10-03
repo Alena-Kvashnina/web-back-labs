@@ -5,12 +5,11 @@
 
 {# основной контент: #}
 {% block main %}
-     <h1>Шаблоны</h1>
-     <div>Тема лабораторной - шаблоны. Список сделанных страниц:</div>
-     <ol>
-        <li>
-            <a href="/lab2/example">example</a>
-        </li>
-     </ol>
+<h1>Лабораторная работа 2 — Шаблоны</h1>
+<ul>
+    {% for route in routes %}
+         <li><a href="{{ route.url }}">{{ route.name }}</a></li>
+    {% endfor %}
+</ul>
+<p><a href="{{ url_for('index') }}">Назад в главное меню</a></p>
 {% endblock %}
-
