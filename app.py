@@ -421,3 +421,34 @@ def lab2():
 def filters():
     phrase = "0 <b>сколько</b> <u>нам</u> <i>открытий</i> чудных...."
     return render_template('filter.html', phrase = phrase)
+
+@app.route('/lab2/calc/')
+def calc_default():
+    # по умолчанию пересылаем на /lab2/calc/1/1
+    return redirect('/lab2/calc/1/1')
+
+
+@app.route('/lab2/calc/<int:a>')
+def calc_one_arg(a):
+    # пересылаем на /lab2/calc/a/1
+    return redirect(f'/lab2/calc/{a}/1')
+
+
+@app.route('/lab2/calc/<int:a>/<int:b>')
+def calc(a, b):
+    # защита от деления на ноль
+    division = "∞" if b == 0 else round(a / b, 2)
+
+    return f'''
+<!doctype html>
+<html>
+    <body>
+        <h1>Расчёт с параметрами:</h1>
+        <p>{a} + {b} = {a + b}</p>
+        <p>{a} - {b} = {a - b}</p>
+        <p>{a} × {b} = {a * b}</p>
+        <p>{a} / {b} = {division}</p>
+        <p>{a}<sup>{b}</sup> = {a ** b}</p>
+    </body>
+</html>
+'''
