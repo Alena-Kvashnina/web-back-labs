@@ -4,19 +4,23 @@
 
 {% block main %}
 <h1>Настройки стиля страницы</h1>
+
 <form method="post">
     <div>
         <label for="color">Цвет текста:</label>
         <input type="color" id="color" name="color" value="{{ color if color else '#000000' }}">
     </div>
+
     <div>
         <label for="bg_color">Цвет фона:</label>
         <input type="color" id="bg_color" name="bg_color" value="{{ bg_color if bg_color else '#ffffff' }}">
     </div>
+
     <div>
         <label for="font_size">Размер шрифта (px):</label>
         <input type="number" id="font_size" name="font_size" value="{{ font_size if font_size else 16 }}">
     </div>
+
     <div>
         <label for="font_weight">Жирность шрифта:</label>
         <select id="font_weight" name="font_weight">
@@ -25,8 +29,15 @@
             <option value="lighter" {% if font_weight=='lighter' %}selected{% endif %}>Lighter</option>
         </select>
     </div>
+
     <div>
         <button type="submit">Сохранить</button>
     </div>
+</form>
+
+<hr>
+
+<form action="/lab3/clear_settings" method="get">
+    <button type="submit" style="background-color: red; color: white;">Очистить все настройки</button>
 </form>
 {% endblock %}
