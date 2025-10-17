@@ -10,12 +10,12 @@ flowers = []   # теперь пустой список при старте
 def flowers_one(flower_id):
     if flower_id < 0 or flower_id >= len(flowers):
         abort(404)
-    return render_template('flower.html', flower=flowers[flower_id], flower_id=flower_id, total=len(flowers))
+    return render_template('lab2/flower.html', flower=flowers[flower_id], flower_id=flower_id, total=len(flowers))
 
 
 @lab2.route('/lab2/all_flowers')
 def all_flowers():
-    return render_template('flowers.html', flowers=flowers)
+    return render_template('lab2/flowers.html', flowers=flowers)
 
 
 @lab2.route('/lab2/add_flower', methods=['POST'])
@@ -31,8 +31,8 @@ def add_flower():
     except ValueError:
         return "Цена должна быть числом", 400
 
-    flowers.lab2end({"name": name, "price": price})
-    return redirect(url_for("all_flowers"))
+    flowers.append({"name": name, "price": price})
+    return redirect(url_for("lab2.all_flowers"))
 
 
 @lab2.route('/lab2/del_flower/<int:flower_id>')
@@ -40,13 +40,13 @@ def del_flower(flower_id):
     if flower_id < 0 or flower_id >= len(flowers):
         abort(404)
     flowers.pop(flower_id)
-    return redirect(url_for("all_flowers"))
+    return redirect(url_for("lab2.all_flowers"))
 
 
 @lab2.route('/lab2/clear_flowers')
 def clear_flowers():
     flowers.clear()
-    return redirect(url_for("all_flowers"))
+    return redirect(url_for("lab2.all_flowers"))
 
 
 @lab2.route('/lab2/example')
@@ -62,33 +62,33 @@ def example():
         {'name': 'мандарины', 'price': 95},
         {'name': 'манго', 'price': 321},
         ]
-    return render_template('example.html', 
+    return render_template('lab2/example.html', 
                            name=name, group=group, lab_num= lab_num,
                            course=course, fruits=fruits)
 
 
 @lab2.route('/lab2/')
-def lab2():
+def lab22():
     routes = [
-        {'name': 'Пример с фруктами', 'url': url_for('example')},
-        {'name': 'Фильтры Jinja2', 'url': url_for('filters')},
-        {'name': 'Калькулятор (по умолчанию 1/1)', 'url': url_for('calc_default')},
-        {'name': 'Калькулятор (7 и 1)', 'url': url_for('calc_one_arg', a=7)},
-        {'name': 'Калькулятор (3 и 4)', 'url': url_for('calc', a=3, b=4)},
-        {'name': 'Цветок №0', 'url': url_for('flowers', flower_id=0)},
-        {'name': 'Список всех цветов', 'url': url_for('all_flowers')},
-        {'name': 'Добавить цветок', 'url': url_for('add_flower', name='роза')},
-        {'name': 'Очистить список цветов', 'url': url_for('clear_flowers')},
-        {'name': 'Список книг', 'url': url_for('books')},
-        {'name': 'Список ягод с картинками', 'url': url_for('berries')},
+        {'name': 'Пример с фруктами', 'url': url_for('lab2.example')},
+        {'name': 'Фильтры Jinja2', 'url': url_for('lab2.filters')},
+        {'name': 'Калькулятор (по умолчанию 1/1)', 'url': url_for('lab2.calc_default')},
+        {'name': 'Калькулятор (7 и 1)', 'url': url_for('lab2.calc_one_arg', a=7)},
+        {'name': 'Калькулятор (3 и 4)', 'url': url_for('lab2.calc', a=3, b=4)},
+        {'name': 'Цветок №0', 'url': url_for('lab2.flowers_one', flower_id=0)},
+        {'name': 'Список всех цветов', 'url': url_for('lab2.all_flowers')},
+        {'name': 'Добавить цветок', 'url': url_for('lab2.add_flower', name='роза')},
+        {'name': 'Очистить список цветов', 'url': url_for('lab2.clear_flowers')},
+        {'name': 'Список книг', 'url': url_for('lab2.books')},
+        {'name': 'Список ягод с картинками', 'url': url_for('lab2.berries')},
     ]
-    return render_template('lab2.html', routes=routes)
+    return render_template('lab2/lab2.html', routes=routes)
 
 
 @lab2.route('/lab2/filters')
 def filters():
     phrase = "0 <b>сколько</b> <u>нам</u> <i>открытий</i> чудных...."
-    return render_template('filter.html', phrase = phrase)
+    return render_template('lab2/filter.html', phrase = phrase)
 
 
 @lab2.route('/lab2/calc/')
@@ -137,32 +137,32 @@ def books():
         {"author": "Александр Куприн", "title": "Олеся", "genre": "Повесть", "pages": 160},
         {"author": "Владимир Набоков", "title": "Лолита", "genre": "Роман", "pages": 368}
     ]
-    return render_template("books.html", books=books_list)
+    return render_template("lab2/books.html", books=books_list)
 
 
 @lab2.route('/lab2/berries')
 def berries():
     berries_list = [
-        {"name": "Клубника", "desc": "Сочная и сладкая летняя ягода.", "img": url_for('static', filename='berries.klubnika.jpg')},
-        {"name": "Малина", "desc": "Ароматная ягода с кислинкой.", "img": url_for('static', filename='berries.malina.jpg')},
-        {"name": "Черника", "desc": "Полезная ягода для зрения.", "img": url_for('static', filename='berries.chernika.jpg')},
-        {"name": "Смородина", "desc": "Черная или красная, богата витамином C.", "img": url_for('static', filename='berries.smorodina.jpg')},
-        {"name": "Голубика", "desc": "Лесная ягода, похожа на чернику, но крупнее.", "img": url_for('static', filename='berries.golubika.jpg')},
-        {"name": "Ежевика", "desc": "Колючая, но очень вкусная ягода.", "img": url_for('static', filename='berries.ezhevika.jpg')},
-        {"name": "Брусника", "desc": "Ягода северных лесов, хороша для морса.", "img": url_for('static', filename='berries.brusnika.jpg')},
-        {"name": "Клюква", "desc": "Кислая болотная ягода.", "img": url_for('static', filename='berries.klukva.jpg')},
-        {"name": "Облепиха", "desc": "Оранжевые ягоды, из которых делают масло.", "img": url_for('static', filename='berries.oblepikha.jpg')},
-        {"name": "Крыжовник", "desc": "Зеленая или красная ягода с кисло-сладким вкусом.", "img": url_for('static', filename='berries.kryzhovnik.jpg')},
-        {"name": "Шиповник", "desc": "Ягода дикого розового куста, очень витаминная.", "img": url_for('static', filename='berries.shipovnik.jpg')},
-        {"name": "Рябина", "desc": "Красные ягоды, которые любят птицы.", "img": url_for('static', filename='berries.ryabina.jpg')},
-        {"name": "Калина", "desc": "Красная горьковатая ягода.", "img": url_for('static', filename='berries.kalina.jpg')},
-        {"name": "Жимолость", "desc": "Темно-синие ягоды необычной формы.", "img": url_for('static', filename='berries.zhimolost.jpg')},
-        {"name": "Ирга", "desc": "Сладкая ягода, напоминающая чернику.", "img": url_for('static', filename='berries.irga.jpg')},
-        {"name": "Барбарис", "desc": "Кислые ягоды, часто используют в конфетах.", "img": url_for('static', filename='berries.barbaris.jpg')},
-        {"name": "Черемуха", "desc": "Ягода с терпким вкусом.", "img": url_for('static', filename='berries.cheremukha.jpg')},
-        {"name": "Морошка", "desc": "Редкая болотная ягода янтарного цвета.", "img": url_for('static', filename='berries.moroshka.jpg')},
-        {"name": "Арония", "desc": "Черноплодная рябина, полезная для давления.", "img": url_for('static', filename='berries.aronia.jpg')},
-        {"name": "Вишня", "desc": "Кисло-сладкая ягода для компотов и пирогов.", "img": url_for('static', filename='berries.vishnya.jpg')}
+        {"name": "Клубника", "desc": "Сочная и сладкая летняя ягода.", "img": url_for('static', filename='lab2/berries.klubnika.jpg')},
+        {"name": "Малина", "desc": "Ароматная ягода с кислинкой.", "img": url_for('static', filename='lab2/berries.malina.jpg')},
+        {"name": "Черника", "desc": "Полезная ягода для зрения.", "img": url_for('static', filename='lab2/berries.chernika.jpg')},
+        {"name": "Смородина", "desc": "Черная или красная, богата витамином C.", "img": url_for('static', filename='lab2/berries.smorodina.jpg')},
+        {"name": "Голубика", "desc": "Лесная ягода, похожа на чернику, но крупнее.", "img": url_for('static', filename='lab2/berries.golubika.jpg')},
+        {"name": "Ежевика", "desc": "Колючая, но очень вкусная ягода.", "img": url_for('static', filename='lab2/berries.ezhevika.jpg')},
+        {"name": "Брусника", "desc": "Ягода северных лесов, хороша для морса.", "img": url_for('static', filename='lab2/berries.brusnika.jpg')},
+        {"name": "Клюква", "desc": "Кислая болотная ягода.", "img": url_for('static', filename='lab2/berries.klukva.jpg')},
+        {"name": "Облепиха", "desc": "Оранжевые ягоды, из которых делают масло.", "img": url_for('static', filename='lab2/berries.oblepikha.jpg')},
+        {"name": "Крыжовник", "desc": "Зеленая или красная ягода с кисло-сладким вкусом.", "img": url_for('static', filename='lab2/berries.kryzhovnik.jpg')},
+        {"name": "Шиповник", "desc": "Ягода дикого розового куста, очень витаминная.", "img": url_for('static', filename='lab2/berries.shipovnik.jpg')},
+        {"name": "Рябина", "desc": "Красные ягоды, которые любят птицы.", "img": url_for('static', filename='lab2/berries.ryabina.jpg')},
+        {"name": "Калина", "desc": "Красная горьковатая ягода.", "img": url_for('static', filename='lab2/berries.kalina.jpg')},
+        {"name": "Жимолость", "desc": "Темно-синие ягоды необычной формы.", "img": url_for('static', filename='lab2/berries.zhimolost.jpg')},
+        {"name": "Ирга", "desc": "Сладкая ягода, напоминающая чернику.", "img": url_for('static', filename='lab2/berries.irga.jpg')},
+        {"name": "Барбарис", "desc": "Кислые ягоды, часто используют в конфетах.", "img": url_for('static', filename='lab2/berries.barbaris.jpg')},
+        {"name": "Черемуха", "desc": "Ягода с терпким вкусом.", "img": url_for('static', filename='lab2/berries.cheremukha.jpg')},
+        {"name": "Морошка", "desc": "Редкая болотная ягода янтарного цвета.", "img": url_for('static', filename='lab2/berries.moroshka.jpg')},
+        {"name": "Арония", "desc": "Черноплодная рябина, полезная для давления.", "img": url_for('static', filename='lab2/berries.aronia.jpg')},
+        {"name": "Вишня", "desc": "Кисло-сладкая ягода для компотов и пирогов.", "img": url_for('static', filename='lab2/berries.vishnya.jpg')}
     ]
-    return render_template("berries.html", berries=berries_list)
+    return render_template("lab2/berries.html", berries=berries_list)
 
