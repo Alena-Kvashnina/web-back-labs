@@ -23,3 +23,47 @@ footer {
     left: 0;
     right: 0;
 }
+
+.center-box {
+    max-width: 500px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+
+input[type="text"],
+input[type="number"],
+input[type="password"] {
+    padding: 8px;
+    margin: 5px 0 15px 0;
+    width: 80%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background: rgb(242, 244, 132);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background: rgb(224, 226, 100);
+}
+
+a {
+    color: #333;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
