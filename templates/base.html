@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Квашнина Алёна. {% block lab %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    
+    <style>
+        body {
+            color: {{ color if color else 'black' }};
+            background-color: {{ bg_color if bg_color else 'white' }};
+            font-size: {{ font_size if font_size else '16px' }};
+            font-weight: {{ font_weight if font_weight else 'normal' }};
+        }
+
+        a {
+            color: {{ color if color else 'black' }};
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: {{ font_weight if font_weight else 'normal' }};
+        }
+    </style>
+
+    <!-- Иконки -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
 </head>
@@ -14,8 +36,9 @@
         <nav>
             <a href="/">Главное меню</a> |
             <a href="/lab1/">Лабораторная 1</a> |
-            <a href="/lab2/">Лабораторная 2</a>
-    </nav>
+            <a href="/lab2/">Лабораторная 2</a> |
+            <a href="/lab3/">Лабораторная 3</a>
+        </nav>
     </header>
 
     <main>
