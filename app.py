@@ -1,13 +1,21 @@
-from flask import Flask, url_for, request, redirect, abort, render_template
+from flask import Flask, url_for, redirect, render_template, request
+from lab1 import lab1
+from lab2 import lab2
+from lab3 import lab3
 import datetime
+
 app = Flask(__name__)
+app.register_blueprint(lab1)
+app.register_blueprint(lab2)
+app.register_blueprint(lab3)
 
 
 @app.route("/")
 @app.route("/index")
 def index():
-    lab1_web = url_for("web")
-    lab2 = url_for("lab2")  # ссылка на вторую лабу
+    lab1_web = url_for("lab1.lab")
+    lab2_web = url_for("lab2.lab22")  # ссылка на вторую лабу
+    lab3_web = url_for("lab3.lab33")
     return f'''
 <!doctype html>
 <html>
@@ -23,7 +31,8 @@ def index():
         <main>
             <ul>
                 <li><a href="{lab1_web}">Первая лабораторная</a></li>
-                <li><a href="{lab2}">Вторая лабораторная</a></li>
+                <li><a href="{lab2_web}">Вторая лабораторная</a></li>
+                <li><a href="{lab3_web}">Третья лабораторная</a></li>
             </ul>
         </main>
         <footer>
@@ -33,189 +42,12 @@ def index():
     </body>
 </html>
 '''
-@app.route("/lab1/")
-def lab1():
-    title_page = url_for('title_page')
-    return '''
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Лабораторная 1</title>
-</head>
-<body>
-    <main>
-        <p>Flask — фреймворк для создания веб-приложений на языке
-        программирования Python, использующий набор инструментов
-        Werkzeug, а также шаблонизатор Jinja2. Относится к категории так
-        называемых микрофреймворков — минималистичных каркасов
-        веб-приложений, сознательно предоставляющих лишь самые ба-
-        зовые возможности.</p>
 
-        <br><a href="''' + title_page + '''">Назад в главное меню</a>
-
-        <h2>Список роутов</h2>
-
-        <ul>
-            <li><a href="/lab1/web">/lab1/web</a></li>
-            <li><a href="/lab1/author">/lab1/author</a></li>
-            <li><a href="/lab1/image">/lab1/image</a></li>
-            <li><a href="/lab1/counter">/lab1/counter</a></li>
-            <li><a href="/lab1/counter/clear">/lab1/counter/clear</a></li>
-            <li><a href="/lab1/info">/lab1/info</a></li>
-            <li><a href="/lab1/create">/lab1/create</a></li>
-            <li><a href="/lab1/400">/lab1/400</a></li>
-            <li><a href="/lab1/401">/lab1/401</a></li>
-            <li><a href="/lab1/402">/lab1/402</a></li>
-            <li><a href="/lab1/403">/lab1/403</a></li>
-            <li><a href="/lab1/405">/lab1/405</a></li>
-            <li><a href="/lab1/418">/lab1/418</a></li>
-            <li><a href="/lab1/500">/lab1/500</a></li>
-            <li><a href="/lab1/aboba">Несуществующая страница</a></li>
-        </ul>
-
-    </main>
-</body>
-</html>
-'''
 
 @app.errorhandler(404)
 def not_found(err):
     return "нет такой страницы", 404 
 
-@app.route("/lab1/web")
-def web():
-    return """<!doctype html> 
-        <html>
-            <body>
-                <h1>web-сервер на flask</h1>
-            </body>
-        </html>""", 200, {
-            'X-Server': 'sample',
-            'Content-Type': 'text/plain; charset=utf-8'
-        }
-        
-@app.route("/lab1/author")
-def author():
-    name = "Квашнина Алёна Юрьевна"
-    group = "ФБИ-34"
-    faculty = "ФБ"
-
-    return """<!doctype html>
-       <html>
-           <body>
-              <p>Студент: """ + name + """</p>
-              <p>Группа: """ + group + """</p>
-              <p>Факультет: """ + faculty + """</p>
-              <a href="/lab1/web">web</a>
-            </body>
-        </html>"""
-
-@app.route("/lab1/image")
-def image():
-
-    path = url_for("static", filename = "oak.jpg")
-    style = url_for("static", filename = "lab1.css")
-
-    return'''<!doctype html>
-        <html>
-           <head>
-               <link rel="stylesheet" href="''' + style + '''">
-           </head>
-           <body>
-               <h1>Дуб</h1>
-                <img src="''' + path + '''">
-           </body>
-        </html>''', 200, {
-            'Content-Language': 'ru',
-            'X-Img-Name': 'oak',
-            'X-Hotel': 'Trivago'
-        }
-
-
-count = 0
-
-@app.route('/lab1/counter')
-def counter():
-    global count
-    count += 1
-    time = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-    url = request.url
-    client_ip = request.remote_addr
-
-    return '''<!doctype html> 
-        <html>
-            <body>
-                Сколько раз вы сюда заходили: ''' + str(count) + '''
-                <hr>
-                <br> Дата и время: ''' + time + '''
-                <br> Запрошенный адрес: ''' + url + '''
-                <br> Ваш IP адрес: ''' + client_ip + '''
-                <br><a href="/lab1/counter/reset">Сбросить счётчик</a>
-            </body>
-        </html>'''
-
-@app.route('/lab1/counter/reset')
-def reset_counter():
-    global count
-    count = 0
-    return '''<!doctype html>
-        <html>
-            <body>
-                <h1>Счётчик обнулён!</h1>
-                <a href="/lab1/counter">Назад к счётчику</a>
-            </body>
-        </html>'''
-
-@app.route('/lab1/info')
-def info():
-    return redirect("/lab1/author")
-
-@app.route("/lab1/created")
-def created():
-    return ''' 
-<!doctype html>
-<html>
-    <body>
-        <h1>Создано успешно</h1>
-        <div><i>что-то создано...</i></div>
-    </body>
-</html>
-''', 201
-
-@app.route("/lab1/400")
-def error_400():
-    return "Некорректный запрос", 400
-
-@app.route("/lab1/401")
-def error_401():
-    return "Пользователь не авторизован", 401
-
-@app.route("/lab1/402")
-def error_402():
-    return "Необходима оплата", 402
-
-@app.route("/lab1/403")
-def error_403():
-    return "Доступ закрыт", 403
-
-@app.route("/lab1/405")
-def error_405():
-    return "Метод не поддерживается", 405
-
-@app.route("/lab1/418")
-def error_418():
-    return "Я чайник", 418
-
-@app.route("/lab1/500")
-def error_500():
-
-    a = 0
-    b = 100
-
-    return b/a
-
-logger = []
 
 @app.errorhandler(404)
 def not_found(err):
@@ -302,6 +134,7 @@ def not_found(err):
 </html>
 ''', 404
 
+
 @app.errorhandler(500)
 def handle_500(err):
     return '''
@@ -326,158 +159,3 @@ def handle_500(err):
 </html>
 ''', 500
 
-flowers = []   # теперь пустой список при старте
-
-@app.route('/lab2/flowers/<int:flower_id>')
-def flowers_one(flower_id):
-    if flower_id < 0 or flower_id >= len(flowers):
-        abort(404)
-    return render_template('flower.html', flower=flowers[flower_id], flower_id=flower_id, total=len(flowers))
-
-
-@app.route('/lab2/all_flowers')
-def all_flowers():
-    return render_template('flowers.html', flowers=flowers)
-
-
-@app.route('/lab2/add_flower', methods=['POST'])
-def add_flower():
-    name = request.form.get("name")
-    price = request.form.get("price")
-
-    if not name or not price:
-        return "Нужно указать и название, и цену цветка", 400
-
-    try:
-        price = int(price)
-    except ValueError:
-        return "Цена должна быть числом", 400
-
-    flowers.append({"name": name, "price": price})
-    return redirect(url_for("all_flowers"))
-
-
-@app.route('/lab2/del_flower/<int:flower_id>')
-def del_flower(flower_id):
-    if flower_id < 0 or flower_id >= len(flowers):
-        abort(404)
-    flowers.pop(flower_id)
-    return redirect(url_for("all_flowers"))
-
-
-@app.route('/lab2/clear_flowers')
-def clear_flowers():
-    flowers.clear()
-    return redirect(url_for("all_flowers"))
-
-@app.route('/lab2/example')
-def example():
-    name = 'Квашнина Алёна'
-    group = 'ФБИ-34'
-    lab_num = 2
-    course = 3
-    fruits = [
-        {'name': 'яблоки', 'price': 100},
-        {'name': 'груши', 'price': 120},
-        {'name': 'апельсины', 'price': 80},
-        {'name': 'мандарины', 'price': 95},
-        {'name': 'манго', 'price': 321},
-        ]
-    return render_template('example.html', 
-                           name=name, group=group, lab_num= lab_num,
-                           course=course, fruits=fruits)
-
-@app.route('/lab2/')
-def lab2():
-    routes = [
-        {'name': 'Пример с фруктами', 'url': url_for('example')},
-        {'name': 'Фильтры Jinja2', 'url': url_for('filters')},
-        {'name': 'Калькулятор (по умолчанию 1/1)', 'url': url_for('calc_default')},
-        {'name': 'Калькулятор (7 и 1)', 'url': url_for('calc_one_arg', a=7)},
-        {'name': 'Калькулятор (3 и 4)', 'url': url_for('calc', a=3, b=4)},
-        {'name': 'Цветок №0', 'url': url_for('flowers', flower_id=0)},
-        {'name': 'Список всех цветов', 'url': url_for('all_flowers')},
-        {'name': 'Добавить цветок', 'url': url_for('add_flower', name='роза')},
-        {'name': 'Очистить список цветов', 'url': url_for('clear_flowers')},
-        {'name': 'Список книг', 'url': url_for('books')},
-        {'name': 'Список ягод с картинками', 'url': url_for('berries')},
-    ]
-    return render_template('lab2.html', routes=routes)
-
-@app.route('/lab2/filters')
-def filters():
-    phrase = "0 <b>сколько</b> <u>нам</u> <i>открытий</i> чудных...."
-    return render_template('filter.html', phrase = phrase)
-
-@app.route('/lab2/calc/')
-def calc_default():
-    # по умолчанию пересылаем на /lab2/calc/1/1
-    return redirect('/lab2/calc/1/1')
-
-
-@app.route('/lab2/calc/<int:a>')
-def calc_one_arg(a):
-    # пересылаем на /lab2/calc/a/1
-    return redirect(f'/lab2/calc/{a}/1')
-
-
-@app.route('/lab2/calc/<int:a>/<int:b>')
-def calc(a, b):
-    # защита от деления на ноль
-    division = "∞" if b == 0 else round(a / b, 2)
-
-    return f'''
-<!doctype html>
-<html>
-    <body>
-        <h1>Расчёт с параметрами:</h1>
-        <p>{a} + {b} = {a + b}</p>
-        <p>{a} - {b} = {a - b}</p>
-        <p>{a} × {b} = {a * b}</p>
-        <p>{a} / {b} = {division}</p>
-        <p>{a}<sup>{b}</sup> = {a ** b}</p>
-    </body>
-</html>
-'''
-
-@app.route('/lab2/books')
-def books():
-    books_list = [
-        {"author": "Фёдор Достоевский", "title": "Преступление и наказание", "genre": "Роман", "pages": 672},
-        {"author": "Лев Толстой", "title": "Война и мир", "genre": "Роман", "pages": 1225},
-        {"author": "Александр Пушкин", "title": "Евгений Онегин", "genre": "Роман в стихах", "pages": 320},
-        {"author": "Антон Чехов", "title": "Вишнёвый сад", "genre": "Пьеса", "pages": 112},
-        {"author": "Николай Гоголь", "title": "Мёртвые души", "genre": "Поэма", "pages": 352},
-        {"author": "Иван Тургенев", "title": "Отцы и дети", "genre": "Роман", "pages": 280},
-        {"author": "Михаил Булгаков", "title": "Мастер и Маргарита", "genre": "Роман", "pages": 480},
-        {"author": "Максим Горький", "title": "Мать", "genre": "Роман", "pages": 416},
-        {"author": "Александр Куприн", "title": "Олеся", "genre": "Повесть", "pages": 160},
-        {"author": "Владимир Набоков", "title": "Лолита", "genre": "Роман", "pages": 368}
-    ]
-    return render_template("books.html", books=books_list)
-
-@app.route('/lab2/berries')
-def berries():
-    berries_list = [
-        {"name": "Клубника", "desc": "Сочная и сладкая летняя ягода.", "img": url_for('static', filename='berries.klubnika.jpg')},
-        {"name": "Малина", "desc": "Ароматная ягода с кислинкой.", "img": url_for('static', filename='berries.malina.jpg')},
-        {"name": "Черника", "desc": "Полезная ягода для зрения.", "img": url_for('static', filename='berries.chernika.jpg')},
-        {"name": "Смородина", "desc": "Черная или красная, богата витамином C.", "img": url_for('static', filename='berries.smorodina.jpg')},
-        {"name": "Голубика", "desc": "Лесная ягода, похожа на чернику, но крупнее.", "img": url_for('static', filename='berries.golubika.jpg')},
-        {"name": "Ежевика", "desc": "Колючая, но очень вкусная ягода.", "img": url_for('static', filename='berries.ezhevika.jpg')},
-        {"name": "Брусника", "desc": "Ягода северных лесов, хороша для морса.", "img": url_for('static', filename='berries.brusnika.jpg')},
-        {"name": "Клюква", "desc": "Кислая болотная ягода.", "img": url_for('static', filename='berries.klukva.jpg')},
-        {"name": "Облепиха", "desc": "Оранжевые ягоды, из которых делают масло.", "img": url_for('static', filename='berries.oblepikha.jpg')},
-        {"name": "Крыжовник", "desc": "Зеленая или красная ягода с кисло-сладким вкусом.", "img": url_for('static', filename='berries.kryzhovnik.jpg')},
-        {"name": "Шиповник", "desc": "Ягода дикого розового куста, очень витаминная.", "img": url_for('static', filename='berries.shipovnik.jpg')},
-        {"name": "Рябина", "desc": "Красные ягоды, которые любят птицы.", "img": url_for('static', filename='berries.ryabina.jpg')},
-        {"name": "Калина", "desc": "Красная горьковатая ягода.", "img": url_for('static', filename='berries.kalina.jpg')},
-        {"name": "Жимолость", "desc": "Темно-синие ягоды необычной формы.", "img": url_for('static', filename='berries.zhimolost.jpg')},
-        {"name": "Ирга", "desc": "Сладкая ягода, напоминающая чернику.", "img": url_for('static', filename='berries.irga.jpg')},
-        {"name": "Барбарис", "desc": "Кислые ягоды, часто используют в конфетах.", "img": url_for('static', filename='berries.barbaris.jpg')},
-        {"name": "Черемуха", "desc": "Ягода с терпким вкусом.", "img": url_for('static', filename='berries.cheremukha.jpg')},
-        {"name": "Морошка", "desc": "Редкая болотная ягода янтарного цвета.", "img": url_for('static', filename='berries.moroshka.jpg')},
-        {"name": "Арония", "desc": "Черноплодная рябина, полезная для давления.", "img": url_for('static', filename='berries.aronia.jpg')},
-        {"name": "Вишня", "desc": "Кисло-сладкая ягода для компотов и пирогов.", "img": url_for('static', filename='berries.vishnya.jpg')}
-    ]
-    return render_template("berries.html", berries=berries_list)
