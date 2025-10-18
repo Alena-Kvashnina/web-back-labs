@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block lab %}Деление чисел{% endblock %}
+
+{% block main %}
+    <h1>Деление чисел</h1>
+
+    <form method="POST">
+        <input type="text" name="x1" placeholder="Первое число">
+        <input type="text" name="x2" placeholder="Второе число">
+        <button type="submit">Посчитать</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% elif result is defined %}
+        <p>{{ x1 }} / {{ x2 }} = {{ result }}</p>
+    {% endif %}
+    <ol>
+        <li><a href="/lab4">Форма</a></li>
+    </ol>
+{% endblock %}
