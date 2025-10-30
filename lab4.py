@@ -131,19 +131,18 @@ def pow_view():
 
 tree_count = 0
 
-@lab4.route('/lab4/tree', methods = ['GET', 'POST'])
+@lab4.route('/lab4/tree', methods=['GET', 'POST'])
 def tree():
     global tree_count
-    if request.method== 'GET':
+    if request.method == 'GET':
         return render_template('lab4/tree.html', tree_count=tree_count)
   
-    operetion = request.form.get('operation')
+    operation = request.form.get('operation')
 
-    if operetion == 'cut':
+    if operation == 'cut' and tree_count > 0:
         tree_count -= 1
-    elif operetion == 'plant':
+    elif operation == 'plant' and tree_count < 10:
         tree_count += 1
 
-    return redirect ('lab4/tree')
-
+    return redirect('/lab4/tree')
 
