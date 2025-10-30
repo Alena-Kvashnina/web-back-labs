@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block lab %}Возведение в степень{% endblock %}
+{% block main %}
+<h1>Возведение в степень</h1>
+
+<form method="POST">
+    <input type="text" name="x1" placeholder="Основание">
+    <input type="text" name="x2" placeholder="Показатель">
+    <button type="submit">Посчитать</button>
+</form>
+
+{% if error %}
+    <p style="color:red">{{ error }}</p>
+{% elif result is defined %}
+    <p>{{ x1 }} ^ {{ x2 }} = {{ result }}</p>
+{% endif %}
+
+<hr>
+<a href="/lab4">Назад</a>
+{% endblock %}

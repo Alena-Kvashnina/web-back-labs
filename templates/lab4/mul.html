@@ -1,9 +1,7 @@
 {% extends "base.html" %}
-
-{% block lab %}Деление чисел{% endblock %}
-
+{% block lab %}Умножение чисел{% endblock %}
 {% block main %}
-<h1>Деление чисел</h1>
+<h1>Умножение</h1>
 
 <form method="POST">
     <input type="text" name="x1" placeholder="Первое число">
@@ -12,14 +10,10 @@
 </form>
 
 {% if error %}
-    <p style="color: red;">{{ error }}</p>
+<p style="color:red">{{ error }}</p>
 {% elif result is defined %}
-    <p>{{ x1 }} / {{ x2 }} = {{ result }}</p>
+<p>{{ x1 }} * {{ x2 }} = {{ result }}</p>
 {% endif %}
 
-<hr>
-<a href="/lab4/div-form">Вернуться к форме</a>
-<br>
-<a href="/lab4/">Меню лабораторной</a>
+<a href="/lab4">Назад</a>
 {% endblock %}
-
