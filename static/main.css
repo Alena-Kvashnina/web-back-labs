@@ -10,13 +10,13 @@ main {
 header {
     margin-bottom: 20px;
     padding: 15px;
-    background: rgb(242, 244, 132);
+    background: rgb(255, 255, 141);
 }
 
 footer {
     margin-top: 15px;
     padding: 8px;
-    background: rgb(242, 244, 132);
+    background: rgb(255, 255, 141);
     text-align: right;
     position: fixed;
     bottom: 0;
@@ -46,7 +46,7 @@ input[type="password"] {
 }
 
 button {
-    background: rgb(242, 244, 132);
+    background: rgb(255, 255, 141);
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
@@ -55,7 +55,7 @@ button {
 }
 
 button:hover {
-    background: rgb(224, 226, 100);
+    background: rgb(255, 255, 141);
 }
 
 a {
