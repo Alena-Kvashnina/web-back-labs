@@ -1,12 +1,26 @@
 {% extends "base.html" %}
-{% block lab %}Нравится/не нравится{% endblock %}
+{% block lab %}Деревья{% endblock %}
+
 {% block main %}
-   <div>
-       Посажено деревьев: {{ tree_count }}
-   </div>
-   <form method="post">
-       <button name="operation" value="plant">Посадить дерево</button>
-       <button name="operation" value="cut">Срубить дерево</button>
-   </form>
+<h1>Посадка и вырубка деревьев</h1>
+
+<p>Посажено деревьев: <b>{{ tree_count }}</b></p>
+
+<form method="post">
+
+    <button name="operation" value="plant"
+        {% if tree_count >= 10 %}disabled{% endif %}>
+        Посадить дерево
+    </button>
+
+    <button name="operation" value="cut"
+        {% if tree_count == 0 %}disabled{% endif %}>
+        Срубить дерево
+    </button>
+
+</form>
+
+<br>
+<a href="/lab4/">Назад к заданиям</a>
 
 {% endblock %}
