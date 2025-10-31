@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block lab %}Холодильник{% endblock %}
+
+{% block main %}
+<h1>Установка температуры холодильника</h1>
+
+<form method="post">
+    <label>Температура (°C):</label>
+    <input type="number" name="temperature" placeholder="-5">
+    <button type="submit">Установить</button>
+</form>
+
+<br>
+
+{% if error %}
+    <p style="color: red; font-weight: bold;">{{ error }}</p>
+{% endif %}
+
+{% if temperature is defined %}
+    <p style="font-size: 18px;">Установлена температура: {{ temperature }}°C</p>
+    <p style="font-size: 30px; color: blue;">{{ snowflakes }}</p>
+{% endif %}
+{% endblock %}
+
