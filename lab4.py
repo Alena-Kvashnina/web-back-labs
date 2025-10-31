@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, session
 lab4 = Blueprint('lab4', __name__)
 
 
@@ -148,25 +148,236 @@ def tree():
 
 
 users = [
-    {'login': 'alex', 'password': '123'},
-    {'login': 'bob', 'password': '555'},
-    {'login': 'sur', 'password': '999'},
-    {'login': 'alena', 'password': '2105'},
-    {'login': 'nik', 'password': '2121'}
+    {'login': 'alex', 'password': '123', 'name': 'Алексей Иванов', 'gender': 'm'},
+    {'login': 'bob', 'password': '555', 'name': 'Борис Петров', 'gender': 'm'},
+    {'login': 'sur', 'password': '999', 'name': 'Сергей Юрьев', 'gender': 'm'},
+    {'login': 'alena', 'password': '2105', 'name': 'Алёна Квашнина', 'gender': 'f'},
+    {'login': 'nik', 'password': '2121', 'name': 'Николай Смирнов', 'gender': 'm'}
 ]
 
-@lab4.route('/lab4/login', methods = ['GET', 'POST'])
+
+@lab4.route('/lab4/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('lab4/login.html', authorized = False)
+        authorized = 'user_name' in session
+        user_name = session.get('user_name', '')
+        return render_template('lab4/login.html', authorized=authorized, user_name=user_name)
 
-    login = request.form.get('login')
-    password = request.form.get('password')
+    login = request.form.get('login', '').strip()
+    password = request.form.get('password', '')
+
+
+    if login == '':
+        return render_template('lab4/login.html', error='Не введён логин', login_value=login)
+
+    if password == '':
+        return render_template('lab4/login.html', error='Не введён пароль', login_value=login)
 
     for user in users:
         if login == user['login'] and password == user['password']:
-            return render_template('/lab4/login.html', login=login, authorized=False)
-    
-    error = 'Неверные логин и/или пароль'
-    return render_template('lab4/login.html', error=error)
+            session['user_name'] = user['name']
+            return redirect('/lab4/login')
 
+    return render_template('lab4/login.html', error='Неверные логин и/или пароль', login_value=login)
+
+
+@lab4.route('/lab4/logout', methods=['POST'])
+def logout():
+    session.pop('user_name', None)
+    return redirect('/lab4/login')
+
+
+@lab4.route('/lab4/fridge', methods=['GET', 'POST'])
+def fridge():
+    if request.method == 'GET':
+        return render_template('lab4/fridge.html')
+
+    temp = request.form.get('temperature')
+
+    # Если температура не введена
+    if temp is None or temp == '':
+        return render_template('lab4/fridge.html', error='Ошибка: не задана температура')
+
+    try:
+        temp = int(temp)
+    except ValueError:
+        return render_template('lab4/fridge.html', error='Ошибка: введите число')
+
+    # Проверки диапазонов
+    if temp < -12:
+        return render_template('lab4/fridge.html',
+                               error='Не удалось установить температуру — слишком низкое значение')
+    elif temp > -1:
+        return render_template('lab4/fridge.html',
+                               error='Не удалось установить температуру — слишком высокое значение')
+
+
+    if -12 <= temp <= -9:
+        snowflakes = "❄❄❄"
+    elif -8 <= temp <= -5:
+        snowflakes = "❄❄"
+    else:  # -4 ... -1
+        snowflakes = "❄"
+
+    return render_template('lab4/fridge.html',
+                           temperature=temp,
+                           snowflakes=snowflakes)
+
+
+@lab4.route('/lab4/grain', methods=['GET', 'POST'])
+def grain():
+    prices = {
+        'ячмень': 12000,
+        'овёс': 8500,
+        'пшеница': 9000,
+        'рожь': 15000
+    }
+
+    if request.method == 'GET':
+        return render_template('lab4/grain.html', prices=prices)
+
+    grain_type = request.form.get('grain')
+    weight = request.form.get('weight')
+
+    # Проверка веса
+    if not weight:
+        return render_template('lab4/grain.html', error="Ошибка: вес не указан!", prices=prices)
+
+    try:
+        weight = float(weight)
+    except ValueError:
+        return render_template('lab4/grain.html', error="Ошибка: введите число!", prices=prices)
+
+    if weight <= 0:
+        return render_template('lab4/grain.html', error="Ошибка: вес должен быть больше 0!", prices=prices)
+
+    if weight > 100:
+        return render_template('lab4/grain.html', error="Такого объёма сейчас нет в наличии!", prices=prices)
+
+    price_per_ton = prices.get(grain_type)
+    total = price_per_ton * weight
+
+    discount = 0
+    discount_text = None
+
+    if weight > 10:
+        discount = total * 0.10
+        total = total - discount
+        discount_text = f"Применена скидка 10% за большой объём. Скидка: {discount:.2f} руб."
+
+    return render_template(
+        'lab4/grain.html',
+        grain_type=grain_type,
+        weight=weight,
+        total=total,
+        discount_text=discount_text,
+        prices=prices
+    )
+
+
+@lab4.route('/lab4/register', methods=['GET', 'POST'])
+def register():
+    global users
+    if request.method == 'GET':
+        return render_template('lab4/register.html')
+
+    login = (request.form.get('login') or '').strip()
+    name = (request.form.get('name') or '').strip()
+    password = request.form.get('password') or ''
+    password2 = request.form.get('password2') or ''
+
+    if not login:
+        return render_template('lab4/register.html', error='Не введён логин', entered_login=login, entered_name=name)
+    if not name:
+        return render_template('lab4/register.html', error='Не введено имя', entered_login=login, entered_name=name)
+    if not password:
+        return render_template('lab4/register.html', error='Не введён пароль', entered_login=login, entered_name=name)
+    if password != password2:
+        return render_template('lab4/register.html', error='Пароли не совпадают', entered_login=login, entered_name=name)
+
+    for u in users:
+        if u.get('login') == login:
+            return render_template('lab4/register.html', error='Логин уже используется', entered_login=login, entered_name=name)
+
+    users.append({'login': login, 'password': password, 'name': name, 'gender': ''})
+    return redirect('/lab4/login')
+
+
+
+@lab4.route('/lab4/users', methods=['GET'])
+def users_page():
+    if 'user_name' not in session:
+        return redirect('/lab4/login')
+
+    me_name = session['user_name']
+    me = None
+    for u in users:
+        if u.get('name') == me_name:
+            me = u
+            break
+
+    users_public = [{'login': u['login'], 'name': u['name']} for u in users]
+    return render_template('lab4/users.html', users=users_public, me_login=(me['login'] if me else None))
+
+
+@lab4.route('/lab4/delete_self', methods=['POST'])
+def delete_self():
+    global users
+    if 'user_name' not in session:
+        return redirect('/lab4/login')
+
+    current_name = session.get('user_name')
+    users = [u for u in users if u.get('name') != current_name]
+    session.pop('user_name', None)
+    return redirect('/lab4/login')
+
+
+@lab4.route('/lab4/edit', methods=['GET', 'POST'])
+def edit_profile():
+    global users
+    if 'user_name' not in session:
+        return redirect('/lab4/login')
+
+    current_name = session['user_name']
+    user = None
+    for u in users:
+        if u.get('name') == current_name:
+            user = u
+            break
+
+    if user is None:
+        return redirect('/lab4/login')
+
+    
+    if request.method == 'GET':
+        return render_template('lab4/edit.html', user_public={'login': user['login'], 'name': user['name']})
+
+  
+    new_login = (request.form.get('login') or '').strip()
+    new_name = (request.form.get('name') or '').strip()
+    new_pass = request.form.get('password') or ''
+    new_pass2 = request.form.get('password2') or ''
+
+    # Проверки обязательных полей (логин и имя обязаны быть)
+    if not new_login or not new_name:
+        return render_template('lab4/edit.html', user_public={'login': new_login, 'name': new_name},
+                               error='Логин и имя обязательны')
+
+    for u in users:
+        if u['login'] == new_login and u is not user:
+            return render_template('lab4/edit.html', user_public={'login': new_login, 'name': new_name},
+                                   error='Логин уже занят')
+
+    # Обновляем логин и имя
+    user['login'] = new_login
+    user['name'] = new_name
+
+   
+    if new_pass or new_pass2:
+        if new_pass != new_pass2:
+            return render_template('lab4/edit.html', user_public={'login': new_login, 'name': new_name},
+                                   error='Пароли не совпадают')
+        user['password'] = new_pass
+
+    session['user_name'] = new_name
+    return redirect('/lab4/users')
