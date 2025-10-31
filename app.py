@@ -2,12 +2,19 @@ from flask import Flask, url_for, redirect, render_template, request
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
+from lab4 import lab4
 import datetime
 
+
 app = Flask(__name__)
+
+app.secret_key = 'секретно-секретный секрет'
+
+
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
+app.register_blueprint(lab4)
 
 
 @app.route("/")
@@ -16,6 +23,7 @@ def index():
     lab1_web = url_for("lab1.lab")
     lab2_web = url_for("lab2.lab22")  # ссылка на вторую лабу
     lab3_web = url_for("lab3.lab33")
+    lab4_web = url_for("lab4.lab44")
     return f'''
 <!doctype html>
 <html>
@@ -33,6 +41,7 @@ def index():
                 <li><a href="{lab1_web}">Первая лабораторная</a></li>
                 <li><a href="{lab2_web}">Вторая лабораторная</a></li>
                 <li><a href="{lab3_web}">Третья лабораторная</a></li>
+                <li><a href="{lab4_web}">Четвертая лабораторная</a></li>
             </ul>
         </main>
         <footer>
