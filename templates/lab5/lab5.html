@@ -72,7 +72,13 @@
     <div class="container">
         <div class="header-section">
             <h1 class="page-title">База знаний</h1>
-            <div class="user-info">Anonymous</div>
+            <div class="user-info">
+                {% if login %}
+                    {{ login }}
+                {% else %}
+                    Anonymous
+                {% endif %}
+            </div>
         </div>
 
         <div class="menu-block">
