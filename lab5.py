@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request, session, redirect
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import check_password_hash, generate_password_hash  
@@ -89,10 +89,68 @@ def login():
         db_close(conn, cur)
         return render_template('lab5/login.html', error=f'Ошибка: {str(e)}')
 
-@lab5.route('/lab5/list')
-def list_articles():
-    return "Список статей - в разработке"
 
-@lab5.route('/lab5/create')
-def create_article():
-    return "Создание статьи - в разработке"
+@lab5.route('/lab5/create', methods=['GET', 'POST'])
+def create():
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+    
+    if request.method == 'GET':
+        return render_template('lab5/create_article.html')
+
+    title = request.form.get('title')  
+    article_text = request.form.get('article_text')
+
+    if not title or not article_text:
+        return "Заполните все поля", 400
+
+    conn, cur = db_connect()
+
+    try:
+        cur.execute("SELECT id FROM users WHERE login = %s;", (login,))
+        user = cur.fetchone()
+        if not user:
+            return "Пользователь не найден", 400
+            
+        user_id = user["id"]
+
+        cur.execute("INSERT INTO articles(user_id, title, article_text) VALUES (%s, %s, %s);", 
+                    (user_id, title, article_text))
+
+        db_close(conn, cur)
+        return redirect('/lab5')
+        
+    except Exception as e:
+        db_close(conn, cur)
+        return f"Ошибка: {str(e)}", 500
+
+
+@lab5.route('/lab5/list')
+def list():
+    login = session.get('login')
+    if not login:
+        return redirect('/lab5/login')
+    
+    conn, cur = db_connect()
+
+    try:
+        
+        cur.execute("SELECT id FROM users WHERE login = %s;", (login,))
+        user = cur.fetchone()
+        
+        if not user:
+            return "Пользователь не найден", 400
+            
+        user_id = user["id"]
+
+        
+        cur.execute("SELECT title, article_text FROM articles WHERE user_id = %s;", (user_id,))
+        articles = cur.fetchall() 
+
+        db_close(conn, cur)
+        return render_template('/lab5/articles.html', articles=articles)
+        
+    except Exception as e:
+        db_close(conn, cur)
+        return f"Ошибка: {str(e)}", 500
