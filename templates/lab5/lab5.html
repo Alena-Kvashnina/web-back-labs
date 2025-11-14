@@ -30,6 +30,16 @@
             font-weight: bold;
         }
         
+        .logout-btn {
+            background: #6c757d;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
         .menu-block {
             background: #ffe6f3;
             border: 2px solid #e6dee2;
@@ -74,7 +84,7 @@
             <h1 class="page-title">База знаний</h1>
             <div class="user-info">
                 {% if login %}
-                    {{ login }}
+                    {{ login }} <a href="/lab5/logout" class="logout-btn">Выйти</a>
                 {% else %}
                     Anonymous
                 {% endif %}
@@ -83,10 +93,17 @@
 
         <div class="menu-block">
             <div class="menu-line">
-                <a href="/lab5/list" class="menu-button">Список статей</a>
+                <a href="/lab5/list" class="menu-button">Мои статьи</a>
                 <a href="/lab5/create" class="menu-button">Создать статью</a>
-                <a href="/lab5/login" class="menu-button">Войти</a>
-                <a href="/lab5/register" class="menu-button">Регистрация</a>
+                <a href="/lab5/public" class="menu-button">Публичные статьи</a>
+                <a href="/lab5/users" class="menu-button">Все пользователи</a>
+                
+                {% if login %}
+                    <a href="/lab5/profile" class="menu-button">Мой профиль</a>
+                {% else %}
+                    <a href="/lab5/login" class="menu-button">Войти</a>
+                    <a href="/lab5/register" class="menu-button">Регистрация</a>
+                {% endif %}
             </div>
         </div>
     </div>
