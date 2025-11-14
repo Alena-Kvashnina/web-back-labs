@@ -3,18 +3,22 @@ from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
 from lab4 import lab4
+from lab5 import lab5
 import datetime
+import os
 
 
 app = Flask(__name__)
 
-app.secret_key = 'секретно-секретный секрет'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
+app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
 
 
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
 app.register_blueprint(lab4)
+app.register_blueprint(lab5)
 
 
 @app.route("/")
@@ -24,6 +28,7 @@ def index():
     lab2_web = url_for("lab2.lab22")  # ссылка на вторую лабу
     lab3_web = url_for("lab3.lab33")
     lab4_web = url_for("lab4.lab44")
+    lab5_web = url_for("lab5.lab55")
     return f'''
 <!doctype html>
 <html>
@@ -42,6 +47,7 @@ def index():
                 <li><a href="{lab2_web}">Вторая лабораторная</a></li>
                 <li><a href="{lab3_web}">Третья лабораторная</a></li>
                 <li><a href="{lab4_web}">Четвертая лабораторная</a></li>
+                <li><a href="{lab5_web}">Пятая лабораторная</a></li>
             </ul>
         </main>
         <footer>
