@@ -25,6 +25,7 @@
             font-weight: {{ font_weight if font_weight else 'normal' }};
         }
     </style>
+    {% block script %}{% endblock %}
 
     
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
