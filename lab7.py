@@ -68,3 +68,13 @@ def put_film(id):
         return {"error": "Фильм не найден"}, 404
     film_data = request.get_json()
     films[id] = film_data
+
+
+
+@lab7.route('/lab7/rest-api/films/', methods=['POST'])
+def add_film():
+    film_data = request.get_json()
+    films.append(film_data)
+    return jsonify({"id": len(films) - 1}), 201
+
+
