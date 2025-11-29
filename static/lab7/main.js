@@ -101,8 +101,7 @@ function sendFilm() {
 }
 
 
-
-function editFilm() {
+function editFilm(id) {
     fetch(`/lab7/rest-api/films/${id}`)
     .then(function (data) {
         return data.json();
