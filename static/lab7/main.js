@@ -9,13 +9,21 @@ function fillFilmList() {
         for(let i = 0; i<films.length; i++){
             let tr = document.createElement('tr');
 
-            let tdTitle = document.createElement('td');
             let tdTitleRus = document.createElement('td');
+            let tdTitle = document.createElement('td');
             let tdYear = document.createElement('td');
             let tdActions = document.createElement('td');
 
-            tdTitle.innerText = films[i].title == films[i].title_ru ? '': films[i].title;
+            // Русское название (основное)
             tdTitleRus.innerText = films[i].title_ru;
+            
+            // Оригинальное название (в скобках, курсивом)
+            if (films[i].title && films[i].title !== films[i].title_ru) {
+                let originalTitle = document.createElement('i');
+                originalTitle.innerText = ` (${films[i].title})`;
+                tdTitleRus.appendChild(originalTitle);
+            }
+            
             tdYear.innerText = films[i].year;
 
             let editButton = document.createElement('button');
@@ -33,7 +41,7 @@ function fillFilmList() {
             tdActions.append(editButton);
             tdActions.append(delButton);
 
-            tr.append(tdTitle);
+            // Изменен порядок: сначала русское название, потом год
             tr.append(tdTitleRus);
             tr.append(tdYear);
             tr.append(tdActions);
@@ -66,14 +74,11 @@ function cancel() {
 }
 
 function addFilm() {
-    // Очищаем поля перед показом
     document.getElementById('id').value = "";
     document.getElementById('title').value = "";
     document.getElementById('title-ru').value = "";
     document.getElementById('year').value = "";
     document.getElementById('description').value = "";
-    
-    // ОЧИСТКА СООБЩЕНИЯ ОБ ОШИБКЕ
     document.getElementById('description-error').innerText = "";
     
     showModal();
@@ -88,7 +93,7 @@ function sendFilm() {
         description: document.getElementById('description').value
     };
 
-    const url = `/lab7/rest-api/films/${id}`;
+    const url = id === '' ? '/lab7/rest-api/films/' : `/lab7/rest-api/films/${id}`;
     const method = id === '' ? 'POST' : 'PUT';
     
     fetch(url, {
@@ -122,10 +127,7 @@ function editFilm(id) {
         document.getElementById('title-ru').value = film.title_ru;
         document.getElementById('year').value = film.year;
         document.getElementById('description').value = film.description;
-        
-        // ОЧИСТКА СООБЩЕНИЯ ОБ ОШИБКЕ
         document.getElementById('description-error').innerText = "";
-        
         showModal();
     });
 }
