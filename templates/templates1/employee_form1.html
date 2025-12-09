@@ -1,0 +1,41 @@
+{% extends 'base1.html' %}
+
+{% block title %}{{ action }}{% endblock %}
+
+{% block content %}
+<h2>{{ action }}</h2>
+
+<form method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.full_name.label }}<br>
+        {{ form.full_name(size=50) }}
+    </p>
+    <p>
+        {{ form.position.label }}<br>
+        {{ form.position(size=50) }}
+    </p>
+    <p>
+        {{ form.gender.label }}<br>
+        {{ form.gender(size=10) }}
+    </p>
+    <p>
+        {{ form.phone.label }}<br>
+        {{ form.phone(size=20) }}
+    </p>
+    <p>
+        {{ form.email.label }}<br>
+        {{ form.email(size=50) }}
+    </p>
+    <p>
+        {{ form.probation() }} {{ form.probation.label }}
+    </p>
+    <p>
+        {{ form.hire_date.label }} (YYYY-MM-DD)<br>
+        {{ form.hire_date() }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+
+<p><a href="{{ url_for('hr.index') }}">Вернуться к списку сотрудников</a></p>
+{% endblock %}

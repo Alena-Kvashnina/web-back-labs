@@ -1,0 +1,26 @@
+{% extends 'base1.html' %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<h2>{% if register %}Регистрация{% else %}Вход{% endif %}</h2>
+
+<form method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.username.label }}<br>
+        {{ form.username(size=32) }}
+    </p>
+    <p>
+        {{ form.password.label }}<br>
+        {{ form.password(size=32) }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+
+{% if not register %}
+<p>Нет аккаунта? <a href="{{ url_for('hr.register') }}">Зарегистрироваться</a></p>
+{% else %}
+<p>Уже есть аккаунт? <a href="{{ url_for('hr.login') }}">Войти</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'base1.html' %}
+
+{% block title %}Список сотрудников{% endblock %}
+
+{% block content %}
+<h2>Список сотрудников</h2>
+
+<div class="controls">
+    <!-- Форма поиска С ВЫБОРОМ ПОЛЯ -->
+    <div class="search-box">
+        <form method="get" action="{{ url_for('hr.index') }}">
+            <div class="search-container">
+                <select name="search_field" class="search-select">
+                    <option value="all" {% if search_field == 'all' %}selected{% endif %}>Все поля</option>
+                    <option value="full_name" {% if search_field == 'full_name' %}selected{% endif %}>ФИО</option>
+                    <option value="position" {% if search_field == 'position' %}selected{% endif %}>Должность</option>
+                    <option value="gender" {% if search_field == 'gender' %}selected{% endif %}>Пол</option>
+                    <option value="phone" {% if search_field == 'phone' %}selected{% endif %}>Телефон</option>
+                    <option value="email" {% if search_field == 'email' %}selected{% endif %}>Email</option>
+                    <option value="probation" {% if search_field == 'probation' %}selected{% endif %}>Испытательный срок</option>
+                    <option value="hire_date" {% if search_field == 'hire_date' %}selected{% endif %}>Дата устройства</option>
+                </select>
+                
+                <input type="text" name="search" placeholder="Введите текст для поиска..." 
+                       value="{{ search }}" class="search-input">
+                
+                <input type="hidden" name="sort" value="{{ sort }}">
+                <input type="hidden" name="direction" value="{{ direction }}">
+                
+                <button type="submit" class="btn">Найти</button>
+                
+                {% if search %}
+                    <a href="{{ url_for('hr.index', sort=sort, direction=direction) }}" 
+                       class="btn-cancel">Сбросить</a>
+                {% endif %}
+            </div>
+            
+            {% if search %}
+                <div class="search-info">
+                    Поиск: <strong>{{ search }}</strong> в поле: 
+                    <strong>
+                        {% if search_field == 'all' %}Все поля
+                        {% elif search_field == 'full_name' %}ФИО
+                        {% elif search_field == 'position' %}Должность
+                        {% elif search_field == 'gender' %}Пол
+                        {% elif search_field == 'phone' %}Телефон
+                        {% elif search_field == 'email' %}Email
+                        {% elif search_field == 'probation' %}Испытательный срок
+                        {% elif search_field == 'hire_date' %}Дата устройства
+                        {% endif %}
+                    </strong>
+                </div>
+            {% endif %}
+        </form>
+    </div>
+    
+    <!-- Информация -->
+    <div class="info-box">
+        <p>Найдено сотрудников: <strong>{{ total_count }}</strong></p>
+        <p>Показано: <strong>{{ employees|length }}</strong> на странице {{ page }}</p>
+    </div>
+</div>
+
+<!-- Таблица сотрудников -->
+<table>
+    <thead>
+        <tr>
+            <th>
+                <a href="{{ url_for('hr.index', sort='id', direction='desc' if sort == 'id' and direction == 'asc' else 'asc', search=search, search_field=search_field) }}">
+                    ID {% if sort == 'id' %}{{ '▼' if direction == 'desc' else '▲' }}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('hr.index', sort='full_name', direction='desc' if sort == 'full_name' and direction == 'asc' else 'asc', search=search, search_field=search_field) }}">
+                    ФИО {% if sort == 'full_name' %}{{ '▼' if direction == 'desc' else '▲' }}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('hr.index', sort='position', direction='desc' if sort == 'position' and direction == 'asc' else 'asc', search=search, search_field=search_field) }}">
+                    Должность {% if sort == 'position' %}{{ '▼' if direction == 'desc' else '▲' }}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('hr.index', sort='gender', direction='desc' if sort == 'gender' and direction == 'asc' else 'asc', search=search, search_field=search_field) }}">
+                    Пол {% if sort == 'gender' %}{{ '▼' if direction == 'desc' else '▲' }}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('hr.index', sort='phone', direction='desc' if sort == 'phone' and direction == 'asc' else 'asc', search=search, search_field=search_field) }}">
+                    Телефон {% if sort == 'phone' %}{{ '▼' if direction == 'desc' else '▲' }}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('hr.index', sort='email', direction='desc' if sort == 'email' and direction == 'asc' else 'asc', search=search, search_field=search_field) }}">
+                    Email {% if sort == 'email' %}{{ '▼' if direction == 'desc' else '▲' }}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('hr.index', sort='probation', direction='desc' if sort == 'probation' and direction == 'asc' else 'asc', search=search, search_field=search_field) }}">
+                    Испыт. срок {% if sort == 'probation' %}{{ '▼' if direction == 'desc' else '▲' }}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('hr.index', sort='hire_date', direction='desc' if sort == 'hire_date' and direction == 'asc' else 'asc', search=search, search_field=search_field) }}">
+                    Дата устройства {% if sort == 'hire_date' %}{{ '▼' if direction == 'desc' else '▲' }}{% endif %}
+                </a>
+            </th>
+            {% if session.get('user_id') %}
+            <th>Действия</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for emp in employees %}
+        <tr>
+            <td>{{ emp.id }}</td>
+            <td>{{ emp.full_name }}</td>
+            <td>{{ emp.position }}</td>
+            <td>{{ emp.gender }}</td>
+            <td>{{ emp.phone }}</td>
+            <td>{{ emp.email }}</td>
+            <td>{{ 'Да' if emp.probation else 'Нет' }}</td>
+            <td>{{ emp.hire_date.strftime('%Y-%m-%d') if emp.hire_date else 'Не указана' }}</td>
+            {% if session.get('user_id') %}
+            <td class="actions">
+                <a href="{{ url_for('hr.edit_employee', id=emp.id) }}" class="btn-small">✏️</a>
+                <a href="{{ url_for('hr.delete_employee', id=emp.id) }}" class="btn-small btn-danger">🗑️</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Пагинация -->
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="{{ url_for('hr.index', page=page-1, search=search, search_field=search_field, sort=sort, direction=direction) }}" 
+           class="btn-cancel">← Назад</a>
+    {% endif %}
+    
+    {% if has_more %}
+        <a href="{{ url_for('hr.index', page=page+1, search=search, search_field=search_field, sort=sort, direction=direction) }}" 
+           class="btn">Показать еще 20 →</a>
+    {% endif %}
+</div>
+
+<!-- Кнопки действий -->
+<div class="action-buttons">
+    {% if session.get('user_id') %}
+        <a href="{{ url_for('hr.add_employee') }}" class="btn">➕ Добавить сотрудника</a>
+        <a href="{{ url_for('hr.generate_test_data') }}" class="btn-cancel" 
+           onclick="return confirm('Сгенерировать 150 тестовых сотрудников? Существующие данные будут удалены.')">
+           🧪 Генерировать тестовые данные
+        </a>
+    {% endif %}
+</div>
+{% endblock %}
