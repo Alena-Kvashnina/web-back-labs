@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа 8</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        .nav {
+            display: flex;
+            gap: 15px;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #007bff;
+            padding: 8px 16px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .nav a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        .username {
+            color: #666;
+            font-style: italic;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+        .main-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Лабораторная работа 8</h1>
+            <div class="nav">
+                <a href="{{ url_for('lab8.login') }}">Вход</a>
+                <a href="{{ url_for('lab8.register') }}">Регистрация</a>
+                <a href="{{ url_for('lab8.articles') }}">Список статей</a>
+                <a href="{{ url_for('lab8.create') }}">Создать статью</a>
+            </div>
+        </div>
+        
+        <div class="username">
+            Пользователь: <strong>{{ username }}</strong>
+        </div>
+        
+        <div class="main-title">
+            <h2>Система управления статьями</h2>
+        </div>
+        
+        <div class="content">
+            <p>Добро пожаловать в систему управления статьями.</p>
+            <p>Используйте навигационные ссылки для доступа к различным функциям:</p>
+            <ul>
+                <li><strong>Вход</strong> - авторизация в системе</li>
+                <li><strong>Регистрация</strong> - создание нового аккаунта</li>
+                <li><strong>Список статей</strong> - просмотр всех статей</li>
+                <li><strong>Создать статью</strong> - добавление новой статьи</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
