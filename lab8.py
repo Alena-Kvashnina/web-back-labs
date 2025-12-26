@@ -1,7 +1,15 @@
-from flask import Blueprint, render_template, session, request, redirect
+from flask import Blueprint, render_template, request, make_response, redirect, session, current_app, abort, jsonify
 from db import db
 from db.models import users, articles
-
+from flask_login import login_user, login_required, current_user
+import psycopg2
+from datetime import datetime
+from psycopg2.extras import RealDictCursor
+import sqlite3
+from os import path
+from flask_login import logout_user
+from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy import func 
 
 lab8 = Blueprint('lab8', __name__)
 
@@ -9,9 +17,24 @@ lab8 = Blueprint('lab8', __name__)
 def lab88():  
     return render_template('lab8/lab8.html', username='Anonymous')
 
-@lab8.route('/lab8/login')
-def login():
-    return "Страница входа"
+login_form = request.form.get('login')
+    password_form = request.form.get('password')
+    remember = request.form.get('check') == 'on'
+    
+    if not login_form or not login_form.strip():
+        return render_template('lab8/login.html', error='Введите логин!')
+    if not password_form or not password_form.strip():
+        return render_template('lab8/login.html', error='Введите пароль!')
+    
+    user = users.query.filter_by(login = login_form).first()
+    if user:
+        if check_password_hash(user.password, password_form):
+            login_user(user, remember = remember)
+            return redirect('/lab8/')
+
+    return render_template('lab8/login.html', error='Ошибка входа: логин и/или пароль неверны')
+
+    
 
 @lab8.route('/lab8/register', methods=['GET', 'POST'])
 def register():
@@ -33,9 +56,11 @@ def register():
     return redirect('/lab8/')
 
 
-@lab8.route('/lab8/articles')
-def articles():
-    return "Список статей"
+@lab8.route('/lab8/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/lab8/')
 
 @lab8.route('/lab8/create')
 def create():
