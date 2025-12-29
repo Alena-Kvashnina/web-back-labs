@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block lab %}Лабораторная работа 9{% endblock %}
+
+{% block main %}
+<h1>Регистрация</h1>
+
+<form method="post" action="/lab9/register12">
+  <div>
+    <label>
+      Логин:
+      <input type="text" name="login" required>
+    </label>
+  </div>
+
+  <div>
+    <label>
+      Пароль:
+      <input type="password" name="password" required>
+    </label>
+  </div>
+
+  {% if error %}
+    <div style="color:red; margin-top:10px;">
+      <b>Ошибка:</b> {{ error }}
+    </div>
+  {% endif %}
+
+  <button type="submit">Зарегистрироваться</button>
+</form>
+
+<p style="margin-top:15px;">
+  Уже есть аккаунт?
+  <a href="/lab9/login12">Войти</a>
+</p>
+
+<p style="margin-top:10px;">
+  <a href="/lab9/">← Назад к подаркам</a>
+</p>
+{% endblock %}

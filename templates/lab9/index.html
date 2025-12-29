@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block lab %}Лабораторная работа 9{% endblock %}
+
+{% block main %}
+<link rel="stylesheet" href="{{ url_for('static', filename='lab9/lab9.css') }}">
+
+<div class="new-year-theme">
+
+  <div class="stats-panel">
+    <h1>🎄 Новогодние подарки 🎁</h1>
+
+    <!-- КНОПКИ ВХОДА/РЕГИСТРАЦИИ ПРЯМО НА СТРАНИЦЕ -->
+    <div class="auth-panel">
+      {% if is_logged_in %}
+        <span>Вы вошли как <b>{{ session.login }}</b></span>
+        <button class="santa-btn" type="button" onclick="santa()">🎅 Дед Мороз</button>
+        <a class="auth-btn" href="/lab9/logout">Выйти</a>
+      {% else %}
+        <a class="auth-btn" href="/lab9/login12">Войти</a>
+        <a class="auth-btn" href="/lab9/register12">Регистрация</a>
+      {% endif %}
+    </div>
+
+    <p>Неоткрытых коробок: <b id="closed-count">{{ closed_count }}</b> / {{ box_count }}</p>
+    <p>Ты открыл(а): <b id="user-opened-count">{{ opened_count }}</b> / 3</p>
+  </div>
+
+  <!-- POPUP (как у друга, закрывается onclick) -->
+  <div id="gift-popup" class="gift-popup" style="display:none;">
+    <div class="gift-popup-content">
+      <button class="close-popup" onclick="closeGiftPopup()">×</button>
+      <h3>🎉 Поздравление</h3>
+      <p id="gift-message-text"></p>
+      <div id="gift-preview"></div>
+      <button class="ok-button" onclick="closeGiftPopup()">OK</button>
+    </div>
+  </div>
+
+  <!-- КОРОБКИ -->
+  <div class="boxes-container">
+    {% for b in boxes %}
+      <div class="gift-box {% if b.id in opened_global %}opened{% endif %}"
+           data-id="{{ b.id }}"
+           style="left: {{ b.left }}%; top: {{ b.top }}%;">
+        <div class="box-content">
+          <img
+            class="box-img"
+            src="{% if b.id in opened_global %}
+                   {{ url_for('static', filename='lab9/opened_box.png') }}
+                 {% else %}
+                   {{ url_for('static', filename='lab9/box_closed_' ~ (b.id+1) ~ '.png') }}
+                 {% endif %}"
+            alt="Коробка {{ b.id+1 }}"
+          >
+          <div class="box-status">{% if b.id in opened_global %}Открыта{% else %}Закрыта{% endif %}</div>
+          <div class="box-number">Коробка {{ b.id+1 }}</div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<script>
+function closeGiftPopup() {
+  document.getElementById('gift-popup').style.display = 'none';
+}
+
+function showGiftPopup(message, giftImage) {
+  document.getElementById('gift-message-text').textContent = message || "";
+  if (giftImage) {
+    document.getElementById('gift-preview').innerHTML =
+      `<img src="{{ url_for('static', filename='') }}${giftImage}" alt="Подарок" style="max-width: 320px;">`;
+  } else {
+    document.getElementById('gift-preview').innerHTML = "";
+  }
+  document.getElementById('gift-popup').style.display = 'flex';
+}
+
+function updateBoxAfterOpen(boxElement) {
+  const img = boxElement.querySelector('.box-img');
+  if (img) img.src = "{{ url_for('static', filename='lab9/opened_box.png') }}";
+  const status = boxElement.querySelector('.box-status');
+  if (status) status.textContent = 'Открыта';
+  boxElement.classList.add('opened');
+}
+
+async function openBox(boxId, boxElement) {
+  const res = await fetch('/lab9/api/open', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({id: boxId})
+  });
+  const data = await res.json();
+
+  if (!data.ok && data.authRequired) {
+    showGiftPopup(data.message || "Нужно войти", null);
+    return;
+  }
+  if (!data.ok && data.limitReached) {
+    showGiftPopup(data.message || "Можно открыть не больше 3 коробок 🙂", null);
+    return;
+  }
+  if (!data.ok) {
+    showGiftPopup(data.error || "Ошибка", null);
+    return;
+  }
+
+  if (data.alreadyOpened) {
+    updateBoxAfterOpen(boxElement);
+    return;
+  }
+
+  document.getElementById('user-opened-count').textContent = data.openedCount;
+  document.getElementById('closed-count').textContent = data.remaining;
+
+  showGiftPopup(data.greeting, data.giftImage);
+  updateBoxAfterOpen(boxElement);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.gift-box').forEach(box => {
+    box.addEventListener('click', () => {
+      if (box.classList.contains('opened')) return;
+      openBox(parseInt(box.dataset.id), box);
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeGiftPopup();
+  });
+});
+
+async function santa() {
+  const res = await fetch('/lab9/api/santa', {method: 'POST'});
+  const data = await res.json();
+  showGiftPopup(data.message || "Готово!", null);
+  if (data.ok) setTimeout(() => location.reload(), 300);
+}
+</script>
+
+{% endblock %}
