@@ -1,6 +1,12 @@
 from flask import Flask, url_for, render_template, request
 import datetime
 import os
+from os import path
+from flask_login import LoginManager
+
+# Импортируем db из нашего модуля db
+from db import db
+from db.models import users  # для LoginManager
 
 from lab1 import lab1
 from lab2 import lab2
@@ -9,19 +15,45 @@ from lab4 import lab4
 from lab5 import lab5
 from lab6 import lab6
 from lab7 import lab7
-
-from models1 import db
-from hr_app import hr
-from config1 import Config
+from lab8 import lab8
 
 app = Flask(__name__)
-app.config.from_object(Config)
+
+# Инициализация LoginManager ПЕРВОЙ!
+login_manager = LoginManager()
+login_manager.login_view = 'lab8.login'
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return users.query.get(int(user_id))
+
+# НАСТРОЙКА КОНФИГУРАЦИИ
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'Секретно-секретный-секрет')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')  # postgres по умолчанию!
+
+# Настройка подключения к БД
+db_type = app.config['DB_TYPE']
+
+if db_type == 'postgres':
+    db_name = 'alena_kvashnina_orm'
+    db_user = 'alena_kvashnina_orm'
+    db_password = '123'
+    host_ip = '127.0.0.1'
+    host_port = 5432
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{host_ip}:{host_port}/{db_name}'
+else:
+    dir_path = path.dirname(path.realpath(__file__))
+    db_path = path.join(dir_path, 'alena_kvashnina_orm.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+
+# Инициализация БД с приложением
 db.init_app(app)
 
+# Создание таблиц
 with app.app_context():
     db.create_all()
-
-logger = []
 
 # РЕГИСТРАЦИЯ BLUEPRINTS
 app.register_blueprint(lab1)
@@ -31,71 +63,137 @@ app.register_blueprint(lab4)
 app.register_blueprint(lab5)
 app.register_blueprint(lab6)
 app.register_blueprint(lab7)
-app.register_blueprint(hr, url_prefix="/hr")
+app.register_blueprint(lab8)
 
+logger = []
 
 @app.route("/")
 @app.route("/index")
 def index():
-    return f'''
-    <h1>НГТУ, ФБ, WEB-программирование</h1>
-    <ul>
-        <li><a href="{url_for('hr.index')}">HR-сайт — карточки сотрудников</a></li>
-        <li><a href="{url_for('lab1.lab')}">Лабораторная 1</a></li>
-        <li><a href="{url_for('lab2.lab22')}">Лабораторная 2</a></li>
-        <li><a href="{url_for('lab3.lab33')}">Лабораторная 3</a></li>
-        <li><a href="{url_for('lab4.lab44')}">Лабораторная 4</a></li>
-        <li><a href="{url_for('lab5.lab55')}">Лабораторная 5</a></li>
-        <li><a href="{url_for('lab6.lab66')}">Лабораторная 6</a></li>
-        <li><a href="{url_for('lab7.lab77')}">Лабораторная 7</a></li>
-    </ul>
-    <footer>
-        <p>Квашнина Алёна Юрьевна, ФБИ-34, 2025</p>
-    </footer>
-    '''
-
-# ОБРАБОТЧИКИ ОШИБОК
-@app.errorhandler(404)
-def not_found(err):
-    global logger
-    now = datetime.datetime.today()
-    user_ip = request.remote_addr
-    requested_url = request.url
-    logger.append(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] IP: {user_ip}, URL: {requested_url}")
-
-    logs_html = "".join(f"<li>{entry}</li>" for entry in logger)
-    home_url = url_for("index")
+    lab1_url = url_for("lab1.lab")
+    lab2_url = url_for("lab2.lab22")
+    lab3_url = url_for("lab3.lab33")
+    lab4_url = url_for("lab4.lab44")
+    lab5_url = url_for("lab5.lab55")
+    lab6_url = url_for("lab6.lab66")
+    lab7_url = url_for("lab7.lab77")
+    lab8_url = url_for("lab8.lab88")
 
     return f'''
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Ошибка 404</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>НГТУ, ФБ, Лабораторные работы</title>
 </head>
-<body style="text-align:center;">
-    <h1 style="font-size:120px;color:red;">404</h1>
-    <h2>Страница не найдена 😢</h2>
-    <p>IP: {user_ip}</p>
-    <p>Время: {now.strftime('%Y-%m-%d %H:%M:%S')}</p>
-    <p><a href="{home_url}">Вернуться на главную</a></p>
+<body>
+    <header>
+        НГТУ, ФБ, WEB-программирование часть 2
+        <hr>
+    </header>
+    <main>
+        <h1>Лабораторные работы по WEB-программированию</h1>
 
-    <h3>Журнал 404:</h3>
-    <ul>
-        {logs_html}
-    </ul>
+        <div class="menu"> 
+            <ul>
+                <li><a href="{lab1_url}">Лабораторная работа #1</a></li>
+                <li><a href="{lab2_url}">Лабораторная работа #2</a></li>
+                <li><a href="{lab3_url}">Лабораторная работа #3</a></li>
+                <li><a href="{lab4_url}">Лабораторная работа #4</a></li>
+                <li><a href="{lab5_url}">Лабораторная работа #5</a></li>
+                <li><a href="{lab6_url}">Лабораторная работа #6</a></li>
+                <li><a href="{lab7_url}">Лабораторная работа #7</a></li>
+                <li><a href="{lab8_url}">Лабораторная работа #8</a></li>
+            </ul>
+        </div>
+    </main>
+    <footer>
+        <hr>
+        &copy;Квашнина Алёна Юрьевна, ФБИ-34, 2025
+    </footer>
+</body>
+</html>
+'''
+
+# ОБРАБОТЧИКИ ОШИБОК
+@app.errorhandler(404)
+def not_found(err):
+    global logger
+    now = datetime.datetime.today()
+    logger.append(f"[{now.strftime('%Y-%m-%d %H:%M:%S')} пользователь {request.remote_addr}] перешел по адресу: {request.url}")
+    logs = ""
+    for i in logger:
+        logs += f"<li>{i}</li> "
+    
+    return f'''
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка 404</title>
+    <style>
+        h1, h2 {{
+            font-size: 200px;
+            color: violet;
+            text-shadow: 5px 5px 10px purple;
+            text-align: center;
+            margin-bottom: 0;
+            margin-top: 60px;
+            animation: float 3s ease-in-out infinite;
+        }}
+
+         h2 {{
+            font-size: 40px;
+            text-shadow: none;
+        }}
+        ul {{
+            list-style-type: none;
+        }}
+        div.logger {{
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            color: green;
+        }}
+    
+        @keyframes float {{
+        0%   {{ transform: translateY(0px); }}
+        50%  {{ transform: translateY(-20px); }}
+        100% {{ transform: translateY(0px); }}
+        }}
+
+    </style>
+</head>
+<body>
+    <main>
+        <h1>404</h1>
+        <h2>Страница по запрашиваемому адресу не найдена</h2>
+        <div class="logger">
+            <ul>
+                {logs}
+            </ul>
+        </div>
+    </main>
 </body>
 </html>
 ''', 404
 
-
 @app.errorhandler(500)
 def internal_error(err):
     return '''
-    <h1>500</h1>
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Ошибка 500</title>
+</head>
+<body style="text-align:center;">
+    <h1 style="font-size:120px;color:red;">500</h1>
     <h2>Внутренняя ошибка сервера</h2>
-    ''', 500
-
+</body>
+</html>
+''', 500
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
